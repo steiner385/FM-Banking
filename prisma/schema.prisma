@@ -1,0 +1,76 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum AccountType {
+  CHECKING
+  SAVINGS
+  ALLOWANCE
+  INVESTMENT
+}
+
+enum AccountStatus {
+  ACTIVE
+  CLOSED
+  SUSPENDED
+}
+
+enum TransactionType {
+  DEPOSIT
+  WITHDRAWAL
+  TRANSFER
+}
+
+enum TransactionStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+enum Currency {
+  USD
+  EUR
+  GBP
+}
+
+model BankAccount {
+  id            String   @id @default(uuid())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  name          String
+  type          AccountType
+  balance       Float    @default(0)
+  currency      Currency @default(USD)
+  status        AccountStatus @default(ACTIVE)
+  userId        String
+  familyId      String
+  transactions  Transaction[]
+
+  @@index([userId])
+  @@index([familyId])
+}
+
+model Transaction {
+  id            String   @id @default(uuid())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  type          TransactionType
+  amount        Float
+  currency      Currency @default(USD)
+  description   String?
+  status        TransactionStatus @default(PENDING)
+  accountId     String
+  account       BankAccount @relation(fields: [accountId], references: [id])
+  userId        String
+  familyId      String
+
+  @@index([accountId])
+  @@index([userId])
+  @@index([familyId])
+}

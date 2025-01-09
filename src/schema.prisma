@@ -1,0 +1,57 @@
+// Banking Plugin Schema
+// Note: This extends the core schema by adding banking-specific models
+
+model BankAccount {
+  id        String        @id @default(uuid())
+  name      String
+  type      String        // SAVINGS, CHECKING, ALLOWANCE
+  familyId  String
+  userId    String
+  balance   Float         @default(0)
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  family    Family        @relation(fields: [familyId], references: [id])
+  user      User         @relation(fields: [userId], references: [id])
+  sentTransactions     Transaction[] @relation("FromAccount")
+  receivedTransactions Transaction[] @relation("ToAccount")
+
+  @@index([familyId])
+  @@index([userId])
+}
+
+model Transaction {
+  id              String    @id @default(uuid())
+  fromAccountId   String
+  toAccountId     String
+  amount          Float
+  description     String?
+  category        String    // ALLOWANCE, REWARD, TRANSFER, PAYMENT
+  status          String    @default("PENDING_APPROVAL") // PENDING_APPROVAL, APPROVED, REJECTED, COMPLETED, CANCELLED
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  fromAccount     BankAccount @relation("FromAccount", fields: [fromAccountId], references: [id])
+  toAccount       BankAccount @relation("ToAccount", fields: [toAccountId], references: [id])
+
+  @@index([fromAccountId])
+  @@index([toAccountId])
+}
+
+model Loan {
+  id                String    @id @default(uuid())
+  borrowerId        String
+  lenderId          String
+  amount            Float
+  interestRate      Float
+  termDays          Int
+  purpose           String
+  repaymentSchedule String    // WEEKLY, BIWEEKLY, MONTHLY, ONCE
+  status            String    @default("PENDING") // PENDING, ACTIVE, LATE, DEFAULTED, COMPLETED, CANCELLED
+  collateral        String?   // Store JSON as string
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  borrower          User      @relation("BorrowedLoans", fields: [borrowerId], references: [id])
+  lender            User      @relation("LentLoans", fields: [lenderId], references: [id])
+
+  @@index([borrowerId])
+  @@index([lenderId])
+}
