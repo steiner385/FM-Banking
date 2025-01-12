@@ -19,6 +19,7 @@
   "dependencies": {
     "@hono/node-server": "^1.13.7",
     "@prisma/client": "^5.0.0",
+    "familymanager-sdk": "file:../FamilyManager-SDK",
     "hono": "^4.6.16",
     "zod": "^3.24.1"
   },
@@ -33,7 +34,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/your-username/fm-banking.git"
+    "url": "git+https://github.com/steiner385/fm-banking.git"
   },
   "keywords": [
     "banking",
@@ -43,7 +44,7 @@
   "author": "Your Name",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/your-username/fm-banking/issues"
+    "url": "https://github.com/steiner385/fm-banking/issues"
   },
-  "homepage": "https://github.com/your-username/fm-banking#readme"
+  "homepage": "https://github.com/steiner385/fm-banking#readme"
 }
